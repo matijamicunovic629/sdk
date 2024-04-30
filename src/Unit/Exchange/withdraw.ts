@@ -38,7 +38,9 @@ export default async function withdraw({
   const {
     exchangeContractAddress,
     assetToAddress,
+    assetToDecimals
   } = await simpleFetch(blockchainService.getInfo)();
+  const decimal = assetToDecimals[asset]
 
   const nativeCryptocurrency = getNativeCryptocurrencyName(assetToAddress);
   const exchangeContract = Exchange__factory.connect(exchangeContractAddress, provider);
@@ -80,7 +82,9 @@ export default async function withdraw({
 
   const unsignedTx = await exchangeContract.withdraw.populateTransaction(
     assetAddress,
-    normalizeNumber(amount, INTERNAL_PROTOCOL_PRECISION, BigNumber.ROUND_FLOOR).toString(),
+    // normalizeNumber(amount, INTERNAL_PROTOCOL_PRECISION, BigNumber.ROUND_FLOOR),
+    normalizeNumber(amount, decimal, BigNumber.ROUND_FLOOR),
+
   );
   unsignedTx.gasLimit = BigInt(WITHDRAW_GAS_LIMIT);
 
