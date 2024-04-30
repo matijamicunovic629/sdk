@@ -115,9 +115,11 @@ export default async function deposit({
   const nonce = await provider.getTransactionCount(walletAddress, 'pending');
   unsignedTx.nonce = nonce;
 
-  const signedTx = await signer.signTransaction(unsignedTx);
+  // const signedTx = await signer.signTransaction(unsignedTx);
   try {
-    const txResponse = await provider.sendTransaction(signedTx);
+    // const txResponse = await provider.sendTransaction(signedTx);
+    const txResponse = await signer.sendTransaction(unsignedTx);
+
     console.log(`Deposit tx sent: ${txResponse.hash}. Waiting for confirmation...`);
     const txReceipt = await txResponse.wait();
     if (txReceipt.status !== undefined) {
